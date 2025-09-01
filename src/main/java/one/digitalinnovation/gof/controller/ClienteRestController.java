@@ -55,4 +55,39 @@ public class ClienteRestController {
 		clienteService.deletar(id);
 		return ResponseEntity.ok().build();
 	}
+
+	// GET /clientes/page?page=0&size=10
+    @GetMapping("/page")
+    public ResponseEntity<Page<Cliente>> listarPaginado(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(clienteService.buscarPaginado(pageable));
+    }
+
+    // GET /clientes/search?nome=ana&page=0&size=10
+    @GetMapping("/search")
+    public ResponseEntity<Page<Cliente>> buscarPorNome(
+            @RequestParam String nome,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(clienteService.buscarPorNome(nome, pageable));
+    }
+
+    // PATCH /clientes/{id}  (atualização parcial)
+    @PatchMapping("/{id}")
+    public ResponseEntity<Cliente> atualizarParcial(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> campos) {
+        Cliente atualizado = clienteService.atualizarParcial(id, campos);
+        return ResponseEntity.ok(atualizado);
+    }
+
+    // POST /clientes/bulk  (cria vários de uma vez)
+    @PostMapping("/bulk")
+    public ResponseEntity<List<Cliente>> inserirEmLote(@RequestBody List<Cliente> clientes) {
+        var salvos = clienteService.inserirEmLote(clientes);
+        return ResponseEntity.ok(salvos);
+    }
 }
