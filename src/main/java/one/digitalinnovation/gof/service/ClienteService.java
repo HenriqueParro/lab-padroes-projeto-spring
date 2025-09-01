@@ -1,24 +1,29 @@
 package one.digitalinnovation.gof.service;
 
 import one.digitalinnovation.gof.model.Cliente;
+import one.digitalinnovation.gof.model.Endereco;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-/**
- * Interface que define o padrão <b>Strategy</b> no domínio de cliente. Com
- * isso, se necessário, podemos ter multiplas implementações dessa mesma
- * interface.
- * 
- * @author falvojr
- */
+import java.util.List;
+import java.util.Map;
+
 public interface ClienteService {
 
-	Iterable<Cliente> buscarTodos();
+    Iterable<Cliente> buscarTodos();
+    Cliente buscarPorId(Long id);
+    void inserir(Cliente cliente);
+    void atualizar(Long id, Cliente cliente);
+    void deletar(Long id);
 
-	Cliente buscarPorId(Long id);
+    // NOVOS:
+    Page<Cliente> buscarPaginado(Pageable pageable);
+    Page<Cliente> buscarPorNome(String nome, Pageable pageable);
+    Cliente atualizarParcial(Long id, Map<String, Object> campos);
+    List<Cliente> inserirEmLote(List<Cliente> clientes);
 
-	void inserir(Cliente cliente);
-
-	void atualizar(Long id, Cliente cliente);
-
-	void deletar(Long id);
-
+    // Endereço / ViaCEP helpers:
+    Endereco consultarEnderecoViaCep(String cep);
+    Endereco sincronizarEnderecoPorCep(String cep); // busca no ViaCEP e salva no BD
+    Endereco buscarEnderecoNoBanco(String cep);
 }
